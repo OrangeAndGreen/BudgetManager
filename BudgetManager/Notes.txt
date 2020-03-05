@@ -1,0 +1,27 @@
+﻿TODOs:
+
+Graphs
+	-Shade to 0, not -inf
+	-Better color control
+	-Date labels on x-axis
+
+Cleanup:
+	-Investigate failed matching
+		-Amazon: see console output
+		-10/27/19 and 10/29: $413 paid to credit
+		-12/17/19: Amazon -774.67
+			Corresponds to two nearby Credit amounts: 587.43, 187.24
+	-Investigate entries with no description
+
+Misc TODOs:
+	-Background worker
+	-Separate class for AmazonTransactions
+		Formalize that the Amazon stuff is really different
+	-Create Account class
+	-Change Checking/Savings/Credit amounts to be a list <Account, change>
+	-When changes based on user interaction, persist them so I can reconstruct later (i.e. merging Amazon entries to transactions)
+	-Auto-select new TransactionType once saved
+	-Better category management (i.e. select existing or define new)
+		-Separate: think about what categories we really want to break things into
+	-Option to reduce graphs to daily/weekly points
+	-Analyze total/monthly spending per vendor
