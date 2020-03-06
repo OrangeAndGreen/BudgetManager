@@ -10,7 +10,7 @@ namespace BudgetManager
 {
     public static class BudgetAnalyzer
     {
-        public static List<Transaction> UnifyTransactions(Dictionary<string, List<Statement>> allStatements)
+        public static List<Transaction> UnifyTransactions(Dictionary<string, List<Statement>> allStatements, List<AmazonStatement> amazonStatements)
         {
             //Extract all entries from statements
             Dictionary<string, List<Transaction>> allEntries = new Dictionary<string, List<Transaction>>();
@@ -28,18 +28,17 @@ namespace BudgetManager
             //Integrate entries that span more than one account (i.e. transfers)
             Console.WriteLine("Combining entries");
             string checkingKey = "Checking - USAA";
-            string amazonKey = "Amazon";
             List<Transaction> checkingList = allEntries[checkingKey];
             foreach (string account in allEntries.Keys)
             {
-                if (!account.Equals(checkingKey) && !account.Equals(amazonKey))
+                if (!account.Equals(checkingKey))
                 {
                     List<Transaction> accountList = allEntries[account];
                     for (int i = 0; i < accountList.Count; i++)
                     {
                         int searchIndex = accountList.Count - 1 - i;
                         Transaction possibleMatch = accountList[searchIndex];
-                        int index = FindMatch(possibleMatch, checkingList, 7, false);
+                        int index = FindMatch(possibleMatch, checkingList, 7);
 
                         if (index >= 0)
                         {
@@ -50,85 +49,73 @@ namespace BudgetManager
                 }
             }
 
-            //Combine all entries (except Amazon) into one big list
+            //Combine all entries into one big list
             List<Transaction> combined = new List<Transaction>();
             foreach (string account in allEntries.Keys)
             {
-                if (!account.Equals(amazonKey))
-                {
-                    combined.AddRange(allEntries[account]);
-                }
-
-                //Console.WriteLine("'{0}' transactions:", account);
-                //foreach (Transaction entry in allEntries[account])
-                //{
-                //    Console.WriteLine("   {0}", entry);
-                //}
+                combined.AddRange(allEntries[account]);
             }
 
             //Integrate Amazon entries into the list
             Console.WriteLine("Adding Amazon Info");
-            List<Transaction> amazonList = allEntries[amazonKey];
-            foreach (Transaction amazonItem in amazonList)
+            foreach (AmazonStatement statement in amazonStatements)
             {
-                int index = FindMatch(amazonItem, combined, 45, true);
-                if (index >= 0)
+                foreach (AmazonTransaction amazonItem in statement.Transactions)
                 {
-                    combined[index].Accounts.Add(amazonKey);
-                    combined[index].AmazonCategory = amazonItem.AmazonCategory;
-                    combined[index].AmazonDescription = amazonItem.AmazonDescription;
-                }
-                else
-                {
-                    //Console.WriteLine("Failed to integrate Amazon entry: {0}", amazonItem);
-                    combined.Add(amazonItem);
+                    int index = FindMatch(amazonItem, combined, 45);
+                    if (index >= 0)
+                    {
+                        combined[index].AmazonTransactions.Add(amazonItem);
+                    }
+                    //else
+                    //{
+                    //    Console.WriteLine("Failed to integrate Amazon entry: {0}", amazonItem);
+                    //    combined.Add(amazonItem);
+                    //}
                 }
             }
+            
 
             return combined.OrderBy(e => e.Date).ToList();
         }
 
-        public static int FindMatch(Transaction transaction, List<Transaction> checkingList, int windowDays, bool matchAny)
+        public static int FindMatch(Transaction transaction, List<Transaction> checkingList, int windowDays)
         {
             string matchStarter = null;
-            if (!matchAny)
+            Dictionary<string, string> matchingLabels = new Dictionary<string, string>
             {
-                Dictionary<string, string> matchingLabels = new Dictionary<string, string>
-                {
-                    { "USAA CREDIT CARD PAYMENT", "CREDIT CARD ENDING IN" },
-                    { "Payment Thank You", "CHASE CREDIT CRD" },
-                    { "PAYMENT-THANK YOU", "COMENITY PAY" },
-                    { "USAA FUNDS TRANSFER CR", "USAA FUNDS TRANSFER DB" },
-                    { "USAA FUNDS TRANSFER DB", "USAA FUNDS TRANSFER CR" }
-                };
+                {"USAA CREDIT CARD PAYMENT", "CREDIT CARD ENDING IN"},
+                {"Payment Thank You", "CHASE CREDIT CRD"},
+                {"PAYMENT-THANK YOU", "COMENITY PAY"},
+                {"USAA FUNDS TRANSFER CR", "USAA FUNDS TRANSFER DB"},
+                {"USAA FUNDS TRANSFER DB", "USAA FUNDS TRANSFER CR"}
+            };
 
-                string myLabel = transaction.Description;
-                if (transaction.Description == null || transaction.Description.Length == 0)
-                {
-                    myLabel = transaction.FullType;
-                }
+            string myLabel = transaction.Description;
+            if (string.IsNullOrEmpty(transaction.Description))
+            {
+                myLabel = transaction.FullType;
+            }
 
-                foreach (string key in matchingLabels.Keys)
+            foreach (string key in matchingLabels.Keys)
+            {
+                if (myLabel.StartsWith(key))
                 {
-                    if (myLabel.StartsWith(key))
-                    {
-                        matchStarter = matchingLabels[key];
-                        break;
-                    }
-                }
-
-                if (matchStarter == null)
-                {
-                    return -1;
+                    matchStarter = matchingLabels[key];
+                    break;
                 }
             }
 
+            if (matchStarter == null)
+            {
+                return -1;
+            }
 
             for (int i = 0; i < checkingList.Count; i++)
             {
                 Transaction searchEntry = checkingList[i];
                 string searchLabel = searchEntry.Description;
-                if (searchEntry.Description == null || searchEntry.Description.Length == 0)
+                if (string.IsNullOrEmpty(searchEntry.Description))
                 {
                     searchLabel = searchEntry.FullType;
                 }
@@ -142,10 +129,10 @@ namespace BudgetManager
                     double daysDiff = Math.Abs((searchEntry.Date - transaction.Date).TotalDays);
 
                     if (searchEntry.Accounts.Count == 1 &&
-                        (Math.Abs(theirAmount + myAmount) < 0.01 || (matchAny && Math.Abs(myAmount - theirAmount) < 0.01)) &&
+                        Math.Abs(theirAmount + myAmount) < 0.01 &&
                         daysDiff < windowDays &&
-                        (matchAny || searchLabel.StartsWith(matchStarter))
-                        )
+                        searchLabel.StartsWith(matchStarter)
+                    )
                     {
                         //Console.WriteLine("   Combining {0}", this);
                         //Console.WriteLine("        into {0}", searchEntry);
@@ -158,12 +145,34 @@ namespace BudgetManager
             return -1;
         }
 
+        public static int FindMatch(AmazonTransaction transaction, List<Transaction> checkingList, int windowDays)
+        {
+            for (int i = 0; i < checkingList.Count; i++)
+            {
+                Transaction searchEntry = checkingList[i];
+                double myAmount = transaction.Amount;
+                double theirAmount = searchEntry.CheckingAmount == 0 ? (searchEntry.SavingsAmount == 0 ? searchEntry.CreditAmount : searchEntry.SavingsAmount) : searchEntry.CheckingAmount;
+                double daysDiff = Math.Abs((searchEntry.Date - transaction.Date).TotalDays);
+
+                if (searchEntry.Accounts.Count == 1 &&
+                    (Math.Abs(theirAmount + myAmount) < 0.01 || Math.Abs(myAmount - theirAmount) < 0.01) &&
+                    daysDiff < windowDays
+                )
+                {
+                    //Console.WriteLine("   Combining {0}", this);
+                    //Console.WriteLine("        into {0}", searchEntry);
+                    return i;
+                }
+            }
+
+            Console.WriteLine("Failed to find match for entry: {0}", transaction);
+            return -1;
+        }
+
         //TODO Vendor-specific code
         public static void AnalyzeInfo(Dictionary<string, List<Statement>> allStatements)
         {
             List<string> descriptions = new List<string>();
-            List<string> amazonDescriptions = new List<string>();
-            List<string> amazonCategories = new List<string>();
             foreach (string account in allStatements.Keys)
             {
                 foreach (Statement statement in allStatements[account])
@@ -173,16 +182,6 @@ namespace BudgetManager
                         if (!descriptions.Contains(entry.Description))
                         {
                             descriptions.Add(entry.Description);
-                        }
-
-                        if (!amazonDescriptions.Contains(entry.AmazonDescription))
-                        {
-                            amazonDescriptions.Add(entry.AmazonDescription);
-                        }
-
-                        if (!amazonCategories.Contains(entry.AmazonCategory))
-                        {
-                            amazonCategories.Add(entry.AmazonCategory);
                         }
                     }
                 }
@@ -196,21 +195,6 @@ namespace BudgetManager
                 Console.WriteLine(description);
             }
             Console.WriteLine();
-
-            Console.WriteLine("Amazon Categories:");
-            amazonCategories.Sort();
-            foreach (string category in amazonCategories)
-            {
-                Console.WriteLine(category);
-            }
-            Console.WriteLine();
-
-            Console.WriteLine("Amazon Descriptions:");
-            amazonDescriptions.Sort();
-            foreach (string description in amazonDescriptions)
-            {
-                Console.WriteLine(description);
-            }
         }
 
         //TODO Vendor-specific code

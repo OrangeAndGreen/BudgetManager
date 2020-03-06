@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml;
 
 namespace BudgetManager.Logic
 {
@@ -22,61 +20,80 @@ namespace BudgetManager.Logic
         }
 
         public static Dictionary<string, List<Statement>> AllStatements { get; set; }
+        public static List<AmazonStatement> AmazonStatements { get; set; }
 
         public static void Load(string directory)
         {
             string[] directories = Directory.GetDirectories(directory);
 
             AllStatements = new Dictionary<string, List<Statement>>();
+            AmazonStatements = new List<AmazonStatement>();
             foreach (string subDirectory in directories)
             {
                 string directoryName = Path.GetFileNameWithoutExtension(subDirectory);
+                bool isAmazon = directoryName.Equals("Amazon");
 
-                AllStatements[directoryName] = new List<Statement>();
+                if (!isAmazon)
+                {
+                    AllStatements[directoryName] = new List<Statement>();
+                }
+
                 foreach (string file in Directory.GetFiles(subDirectory))
                 {
-                    Statement statement = LoadStatementFromCache(file);
-                    if (statement == null)
+                    if(isAmazon)
                     {
-                        statement = ReadStatementFile(file, directoryName);
-                    }
+                        AmazonStatement statement = ReadAmazonCSV(file);
 
-                    if (statement != null)
+                        if (statement != null)
+                        {
+                            AmazonStatements.Add(statement);
+
+                            Console.WriteLine("   Read Amazon statement {0} with {1} transactions", Path.GetFileName(file), statement.Transactions.Count);
+                        }
+                    }
+                    else
                     {
+                        Statement statement = LoadStatementFromCache(file) ?? ReadStatementFile(file, directoryName);
+
+                        if (statement == null)
+                            continue;
+
                         AllStatements[directoryName].Add(statement);
 
                         double balance = statement.StartingBalance;
-                        if (!directoryName.Equals("Amazon"))
+                        foreach (Transaction entry in statement.Transactions)
                         {
-                            foreach (Transaction entry in statement.Transactions)
+                            if (entry.TypeId <= 0)
                             {
-                                if (entry.TypeId <= 0)
+                                TransactionType transactionType = TypeManager.Identify(entry.Description);
+                                if (transactionType != null)
                                 {
-                                    TransactionType transactionType = TypeManager.Identify(entry.Description);
-                                    if (transactionType != null)
-                                    {
-                                        entry.TypeId = transactionType.Id;
-                                    }
+                                    entry.TypeId = transactionType.Id;
                                 }
-
-                                balance += entry.CheckingAmount + entry.SavingsAmount + entry.CreditAmount;
                             }
 
-                            if (Math.Abs(balance - statement.EndingBalance) > 0.01)
-                            {
-                                Console.WriteLine("Ending balance mismatch: {0} vs. stated {1}", balance, statement.EndingBalance);
-                            }
+                            balance += entry.CheckingAmount + entry.SavingsAmount + entry.CreditAmount;
+                        }
+
+                        if (Math.Abs(balance - statement.EndingBalance) > 0.01)
+                        {
+                            Console.WriteLine("Ending balance mismatch: {0} vs. stated {1}", balance, statement.EndingBalance);
                         }
 
                         SaveToCache(statement);
 
-                        Console.WriteLine("   Read file {0} with {1} transations (${2} --> ${3}, error={4:0.00})", file, statement.Transactions.Count, statement.StartingBalance, statement.EndingBalance, balance - statement.EndingBalance);
+                        Console.WriteLine("   Read statement {0} with {1} transactions (${2} --> ${3}, error={4:0.00})", Path.GetFileName(file), statement.Transactions.Count, statement.StartingBalance, statement.EndingBalance, balance - statement.EndingBalance);
                     }
-
-                    
                 }
 
-                Console.WriteLine("Finished reading {0} directory ({1} --> {2})", directoryName, AllStatements[directoryName].First().StartingBalance, AllStatements[directoryName].Last().EndingBalance);
+                if (isAmazon)
+                {
+                    Console.WriteLine("Finished reading {0} directory", directoryName);
+                }
+                else
+                {
+                    Console.WriteLine("Finished reading {0} directory ({1} --> {2})", directoryName, AllStatements[directoryName].First().StartingBalance, AllStatements[directoryName].Last().EndingBalance);
+                }
             }
         }
 
@@ -97,9 +114,9 @@ namespace BudgetManager.Logic
 
             switch (ret.AccountType)
             {
-                case AccountType.Amazon:
-                    ret.Transactions.AddRange(ReadAmazonCSV(ret));
-                    break;
+                //case AccountType.Amazon:
+                //    ret.Transactions.AddRange(ReadAmazonCSV(ret));
+                //    break;
                 case AccountType.Checking:
                     ret.Transactions.AddRange(ReadUsaaCheckingPDF(ret));
                     break;
@@ -127,7 +144,10 @@ namespace BudgetManager.Logic
 
             foreach(Transaction t in ret.Transactions)
             {
-                t.Description = t.Description.Trim();
+                if (t.Description != null)
+                {
+                    t.Description = t.Description.Trim();
+                }
             }
 
             return ret;
@@ -859,13 +879,13 @@ namespace BudgetManager.Logic
             return ret;
         }
 
-        public static List<Transaction> ReadAmazonCSV(Statement statement)
+        public static AmazonStatement ReadAmazonCSV(string filepath)
         {
-            List<Transaction> ret = new List<Transaction>();
+            AmazonStatement ret = new AmazonStatement(filepath);
 
-            string[] lines = System.IO.File.ReadAllText(statement.Filepath).Split('\n');
+            string[] lines = File.ReadAllText(filepath).Split('\n');
 
-            Transaction prevEntry = null;
+            AmazonTransaction prevEntry = null;
             foreach (string line in lines)
             {
                 List<string> parts = FileHelpers.ParseCSVLine(line);
@@ -885,46 +905,47 @@ namespace BudgetManager.Logic
                 string amountStr = parts[29].Substring(1);
                 double.TryParse(amountStr, out double amount);
 
-                Transaction subEntry = new Transaction
+                //Build an entry for this line by itself
+                AmazonTransaction subEntry = new AmazonTransaction
                 {
                     Date = date.Value,
-                    Accounts = new List<string> { "Amazon" },
-                    CheckingAmount = -1 * amount,
-                    Type = "Debit",
-                    AmazonDescription = parts[2],
-                    AmazonCategory = parts[3],
+                    Amount = -1 * amount,
+                    Description = parts[2],
+                    Category = parts[3],
                     OrderNumber = parts[1]
                 };
 
-                Transaction wrapper = null;
+                //Special code here so we can combine multiple transactions with the same order number into one final transaction with sub-transactions
+
+                AmazonTransaction wrapper = null;
                 if (prevEntry != null)
                 {
+                    //If we had an entry in progress and this entry shares the same order number, add this entry as a sub-transaction
                     if (prevEntry.Items[0].OrderNumber.Equals(subEntry.OrderNumber))
                     {
                         wrapper = prevEntry;
-                        wrapper.CheckingAmount += subEntry.CheckingAmount;
-                        wrapper.AmazonCategory += ";" + subEntry.AmazonCategory;
-                        wrapper.AmazonDescription += ";" + subEntry.AmazonDescription;
+                        wrapper.Amount += subEntry.Amount;
+                        wrapper.Category += ";" + subEntry.Category;
+                        wrapper.Description += ";" + subEntry.Description;
                     }
                     else
                     {
-                        ret.Add(prevEntry);
+                        //Commit the previous entry, the new entry starts a new order
+                        ret.Transactions.Add(prevEntry);
                         prevEntry = null;
                     }
                 }
 
                 if (prevEntry == null)
                 {
-                    wrapper = new Transaction
+                    //Create a new wrapper to hold the sub-transactions
+                    wrapper = new AmazonTransaction
                     {
                         Date = date.Value,
-                        Accounts = new List<string> { "Amazon" },
-                        CheckingAmount = -1 * amount,
-                        Type = "Debit",
-                        AmazonDescription = parts[2],
-                        AmazonCategory = parts[3],
+                        Amount = -1 * amount,
+                        Description = parts[2],
+                        Category = parts[3],
                         OrderNumber = parts[1],
-                        Items = new List<Transaction>()
                     };
                 }
 
@@ -934,7 +955,7 @@ namespace BudgetManager.Logic
 
             if (prevEntry != null)
             {
-                ret.Add(prevEntry);
+                ret.Transactions.Add(prevEntry);
             }
 
             return ret;
@@ -1085,7 +1106,7 @@ namespace BudgetManager.Logic
         {
             string[] parts = summary.Split(',');
 
-            if (parts.Length != 12)
+            if (parts.Length != 10)
             {
                 return null;
             }
@@ -1102,8 +1123,6 @@ namespace BudgetManager.Logic
                 FullType = string.IsNullOrEmpty(parts[7]) ? null : parts[7].Trim().Replace(';', ','),
                 Category = string.IsNullOrEmpty(parts[8]) ? null : parts[8].Trim().Replace(';', ','),
                 Description = string.IsNullOrEmpty(parts[9]) ? null : parts[9].Trim().Replace(';', ','),
-                AmazonCategory = string.IsNullOrEmpty(parts[10]) ? null : parts[10].Trim().Replace(';', ','),
-                AmazonDescription = string.IsNullOrEmpty(parts[11]) ? null : parts[11].Trim().Replace(';', ',')
             };
 
             return ret;

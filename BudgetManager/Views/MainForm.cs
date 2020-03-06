@@ -143,7 +143,7 @@ namespace BudgetManager.Views
 
                 worker?.ReportProgress(0, "Unifying transactions");
 
-                mUnifiedTransactions = BudgetAnalyzer.UnifyTransactions(StatementManager.AllStatements);
+                mUnifiedTransactions = BudgetAnalyzer.UnifyTransactions(StatementManager.AllStatements, StatementManager.AmazonStatements);
                 mStartDate = mUnifiedTransactions[0].Date;
 
                 ShowSummary();

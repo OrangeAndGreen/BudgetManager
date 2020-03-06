@@ -63,6 +63,8 @@
     <Compile Include="BudgetAnalyzer.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Data\Account.cs" />
+    <Compile Include="Data\AmazonStatement.cs" />
+    <Compile Include="Data\AmazonTransaction.cs" />
     <Compile Include="Data\Statement.cs" />
     <Compile Include="Data\Transaction.cs" />
     <Compile Include="Data\TransactionType.cs" />

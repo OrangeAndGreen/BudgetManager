@@ -4,6 +4,12 @@ Graphs
 	-Shade to 0, not -inf
 	-Better color control
 	-Date labels on x-axis
+	-Smaller graph circles
+	-Option to reduce graphs to daily/weekly points
+	-Graph type: monthly spending by category
+	-Add graph option for all, daily, weekly, monthly, yearly
+     	Then main selector just becomes Accounts, Categories, Vendors
+	-Add a way to disable plots within a graph, i.e. click Net plot in legend to remove it
 
 Cleanup:
 	-Investigate failed matching
@@ -15,19 +21,19 @@ Cleanup:
 
 Misc TODOs:
 	-Background worker
-	-Separate class for AmazonTransactions
-		Formalize that the Amazon stuff is really different
 	-Create Account class
 	-Change Checking/Savings/Credit amounts to be a list <Account, change>
 	-When changes based on user interaction, persist them so I can reconstruct later (i.e. merging Amazon entries to transactions)
 	-Auto-select new TransactionType once saved
 	-Better category management (i.e. select existing or define new)
 		-Separate: think about what categories we really want to break things into
-	-Option to reduce graphs to daily/weekly points
 	-Analyze total/monthly spending per vendor
-
 	-Matching transactions list should be a transaction table
 	-Match word option for vendor recognition
 	-Highlight when a filter is going to conflict
 		-Red entries in matching transactions table where there's a conflict
 	-Show load warnings, i.e. when a budget start/end balance don't add up
+	-DARK MODE!!!
+	-Combine identical descriptions in unidentified transaction list
+		Sort the list alphabetically, or by count
+	
