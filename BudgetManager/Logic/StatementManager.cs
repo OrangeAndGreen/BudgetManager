@@ -125,6 +125,11 @@ namespace BudgetManager.Logic
                     break;
             }
 
+            foreach(Transaction t in ret.Transactions)
+            {
+                t.Description = t.Description.Trim();
+            }
+
             return ret;
         }
 

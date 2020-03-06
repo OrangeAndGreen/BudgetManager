@@ -43,8 +43,8 @@
             this.matchesText = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.caseSensitiveCheckbox = new System.Windows.Forms.CheckBox();
             this.startsWithCheckbox = new System.Windows.Forms.CheckBox();
+            this.caseSensitiveCheckbox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -180,6 +180,7 @@
             this.matchesText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.matchesText.Size = new System.Drawing.Size(720, 472);
             this.matchesText.TabIndex = 12;
+            this.matchesText.WordWrap = false;
             // 
             // label6
             // 
@@ -227,17 +228,6 @@
             this.splitContainer1.SplitterDistance = 257;
             this.splitContainer1.TabIndex = 14;
             // 
-            // caseSensitiveCheckbox
-            // 
-            this.caseSensitiveCheckbox.AutoSize = true;
-            this.caseSensitiveCheckbox.Location = new System.Drawing.Point(102, 148);
-            this.caseSensitiveCheckbox.Name = "caseSensitiveCheckbox";
-            this.caseSensitiveCheckbox.Size = new System.Drawing.Size(96, 17);
-            this.caseSensitiveCheckbox.TabIndex = 14;
-            this.caseSensitiveCheckbox.Text = "Case Sensitive";
-            this.caseSensitiveCheckbox.UseVisualStyleBackColor = true;
-            this.caseSensitiveCheckbox.CheckedChanged += new System.EventHandler(this.caseSensitiveCheckbox_CheckedChanged);
-            // 
             // startsWithCheckbox
             // 
             this.startsWithCheckbox.AutoSize = true;
@@ -248,6 +238,17 @@
             this.startsWithCheckbox.Text = "Starts With";
             this.startsWithCheckbox.UseVisualStyleBackColor = true;
             this.startsWithCheckbox.CheckedChanged += new System.EventHandler(this.startsWithCheckbox_CheckedChanged);
+            // 
+            // caseSensitiveCheckbox
+            // 
+            this.caseSensitiveCheckbox.AutoSize = true;
+            this.caseSensitiveCheckbox.Location = new System.Drawing.Point(102, 148);
+            this.caseSensitiveCheckbox.Name = "caseSensitiveCheckbox";
+            this.caseSensitiveCheckbox.Size = new System.Drawing.Size(96, 17);
+            this.caseSensitiveCheckbox.TabIndex = 14;
+            this.caseSensitiveCheckbox.Text = "Case Sensitive";
+            this.caseSensitiveCheckbox.UseVisualStyleBackColor = true;
+            this.caseSensitiveCheckbox.CheckedChanged += new System.EventHandler(this.caseSensitiveCheckbox_CheckedChanged);
             // 
             // IdentificationForm
             // 

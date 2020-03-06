@@ -134,7 +134,9 @@ namespace BudgetManager.Views
                 Id = mLoadedType != null && mLoadedType.Id > 0 ? mLoadedType.Id : -1,
                 Vendor = vendorText.Text,
                 Category = categoryText.Text,
-                Identifier = identifierText.Text
+                Identifier = identifierText.Text,
+                IdentifierCaseSensitive = caseSensitiveCheckbox.Checked,
+                IdentifierMustStart = startsWithCheckbox.Checked
             };
 
             TypeManager.Add(toSave);

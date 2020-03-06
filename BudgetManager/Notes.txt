@@ -25,3 +25,9 @@ Misc TODOs:
 		-Separate: think about what categories we really want to break things into
 	-Option to reduce graphs to daily/weekly points
 	-Analyze total/monthly spending per vendor
+
+	-Matching transactions list should be a transaction table
+	-Match word option for vendor recognition
+	-Highlight when a filter is going to conflict
+		-Red entries in matching transactions table where there's a conflict
+	-Show load warnings, i.e. when a budget start/end balance don't add up
