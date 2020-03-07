@@ -40,15 +40,16 @@
             this.identifierText = new System.Windows.Forms.TextBox();
             this.saveButton = new System.Windows.Forms.Button();
             this.deleteButton = new System.Windows.Forms.Button();
-            this.matchesText = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.startsWithCheckbox = new System.Windows.Forms.CheckBox();
             this.caseSensitiveCheckbox = new System.Windows.Forms.CheckBox();
+            this.transactionsGrid = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.transactionsGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // transactionTypeList
@@ -169,19 +170,6 @@
             this.deleteButton.UseVisualStyleBackColor = true;
             this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             // 
-            // matchesText
-            // 
-            this.matchesText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.matchesText.Location = new System.Drawing.Point(3, 230);
-            this.matchesText.Multiline = true;
-            this.matchesText.Name = "matchesText";
-            this.matchesText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.matchesText.Size = new System.Drawing.Size(720, 472);
-            this.matchesText.TabIndex = 12;
-            this.matchesText.WordWrap = false;
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -212,12 +200,12 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.splitContainer1.Panel2.Controls.Add(this.transactionsGrid);
             this.splitContainer1.Panel2.Controls.Add(this.startsWithCheckbox);
             this.splitContainer1.Panel2.Controls.Add(this.caseSensitiveCheckbox);
             this.splitContainer1.Panel2.Controls.Add(this.saveButton);
             this.splitContainer1.Panel2.Controls.Add(this.label6);
             this.splitContainer1.Panel2.Controls.Add(this.label3);
-            this.splitContainer1.Panel2.Controls.Add(this.matchesText);
             this.splitContainer1.Panel2.Controls.Add(this.label4);
             this.splitContainer1.Panel2.Controls.Add(this.deleteButton);
             this.splitContainer1.Panel2.Controls.Add(this.label5);
@@ -250,6 +238,18 @@
             this.caseSensitiveCheckbox.UseVisualStyleBackColor = true;
             this.caseSensitiveCheckbox.CheckedChanged += new System.EventHandler(this.caseSensitiveCheckbox_CheckedChanged);
             // 
+            // transactionsGrid
+            // 
+            this.transactionsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.transactionsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.transactionsGrid.Location = new System.Drawing.Point(3, 230);
+            this.transactionsGrid.Name = "transactionsGrid";
+            this.transactionsGrid.RowHeadersVisible = false;
+            this.transactionsGrid.Size = new System.Drawing.Size(720, 472);
+            this.transactionsGrid.TabIndex = 16;
+            // 
             // IdentificationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -264,6 +264,7 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.transactionsGrid)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -282,10 +283,10 @@
         private System.Windows.Forms.TextBox identifierText;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button deleteButton;
-        private System.Windows.Forms.TextBox matchesText;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.CheckBox caseSensitiveCheckbox;
         private System.Windows.Forms.CheckBox startsWithCheckbox;
+        private System.Windows.Forms.DataGridView transactionsGrid;
     }
 }

@@ -10,12 +10,15 @@ namespace BudgetManager.Views
     public partial class MainForm : Form
     {
         string mDirectory;
+        List<string> mLoadWarnings { get; set; }
         List<Transaction> mUnifiedTransactions { get; set; }
         DateTime mStartDate { get; set; }
 
         public MainForm()
         {
             InitializeComponent();
+
+            warningButton.Visible = false;
 
             TypeManager.Load();
 
@@ -58,6 +61,14 @@ namespace BudgetManager.Views
         void analysisButton_Click(object sender, EventArgs e)
         {
             new AnalysisForm().Show();
+        }
+
+        private void warningButton_Click(object sender, EventArgs e)
+        {
+            if(mLoadWarnings != null)
+            {
+                MessageBox.Show(string.Join(Environment.NewLine, mLoadWarnings), "Warnings", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         void SetUiEnabled(bool enabled)
@@ -139,7 +150,7 @@ namespace BudgetManager.Views
                 BackgroundWorker worker = o as BackgroundWorker;
                 worker?.ReportProgress(0, "Loading data");
 
-                StatementManager.Load(mDirectory);
+                mLoadWarnings = StatementManager.Load(mDirectory);
 
                 worker?.ReportProgress(0, "Unifying transactions");
 
@@ -207,6 +218,7 @@ namespace BudgetManager.Views
             {
                 summaryLabel.Text = summary;
                 identifyButton.Enabled = numToIdentify > 0;
+                warningButton.Visible = mLoadWarnings != null && mLoadWarnings.Count > 0;
             }
 
             if (summaryLabel.InvokeRequired)

@@ -42,6 +42,7 @@
             this.analysisButton = new System.Windows.Forms.Button();
             this.cleanButton = new System.Windows.Forms.Button();
             this.identifyButton = new System.Windows.Forms.Button();
+            this.warningButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -169,11 +170,23 @@
             this.identifyButton.UseVisualStyleBackColor = true;
             this.identifyButton.Click += new System.EventHandler(this.identifyButton_Click);
             // 
+            // warningButton
+            // 
+            this.warningButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.warningButton.Location = new System.Drawing.Point(649, 27);
+            this.warningButton.Name = "warningButton";
+            this.warningButton.Size = new System.Drawing.Size(50, 50);
+            this.warningButton.TabIndex = 9;
+            this.warningButton.Text = "!!!";
+            this.warningButton.UseVisualStyleBackColor = true;
+            this.warningButton.Click += new System.EventHandler(this.warningButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(810, 218);
+            this.Controls.Add(this.warningButton);
             this.Controls.Add(this.identifyButton);
             this.Controls.Add(this.cleanButton);
             this.Controls.Add(this.analysisButton);
@@ -211,5 +224,6 @@
         private System.Windows.Forms.Button analysisButton;
         private System.Windows.Forms.Button cleanButton;
         private System.Windows.Forms.Button identifyButton;
+        private System.Windows.Forms.Button warningButton;
     }
 }

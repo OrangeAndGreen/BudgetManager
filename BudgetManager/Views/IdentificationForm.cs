@@ -2,6 +2,7 @@
 using BudgetManager.Logic;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace BudgetManager.Views
@@ -48,7 +49,7 @@ namespace BudgetManager.Views
                 {
                     foreach(Transaction transaction in statement.Transactions)
                     {
-                        if(transaction.TypeId <= 0 && transaction.Description != null)
+                        if(transaction.TypeId <= 0 && !string.IsNullOrEmpty(transaction.Description))
                         {
                             list.Add($"{transaction.Description}");
                         }
@@ -191,9 +192,9 @@ namespace BudgetManager.Views
                     caseSensitiveCheckbox.Checked != mLoadedType.IdentifierCaseSensitive;
         }
 
-        void UpdateSaveAndDelete()
+        void UpdateSaveAndDelete(bool forceNoSave = false)
         {
-            saveButton.Enabled = (mLoadedType != null && mLoadedType.Id <= 0) || IsDirty();
+            saveButton.Enabled =!forceNoSave && ((mLoadedType != null && mLoadedType.Id <= 0) || IsDirty());
             deleteButton.Enabled = mLoadedType != null && mLoadedType.Id > 0;
         }
 
@@ -219,16 +220,48 @@ namespace BudgetManager.Views
 
         void UpdateMatchesList()
         {
-            List<Transaction> matches = FindMatches(identifierText.Text, startsWithCheckbox.Checked, caseSensitiveCheckbox.Checked);
+            transactionsGrid.Rows.Clear();
+            transactionsGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            transactionsGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
-            List<string> list = new List<string>();
-            foreach (Transaction transaction in matches)
+            string[] columnNames = {
+                "Date",
+                "Checking",
+                "Credit",
+                "Savings",
+                "Accounts",
+                "Description"
+            };
+
+            transactionsGrid.ColumnCount = columnNames.Length;
+
+            for (int i = 0; i < columnNames.Length; i++)
             {
-                list.Add($"{transaction.Description}");
+                transactionsGrid.Columns[i].Name = columnNames[i];
             }
 
-            list.Sort();
-            matchesText.Text = string.Join(Environment.NewLine, list);
+            List<Transaction> matches = FindMatches(identifierText.Text, startsWithCheckbox.Checked, caseSensitiveCheckbox.Checked);
+
+            matches.Sort((s1, s2) => s1.Description.CompareTo(s2.Description));
+
+            //List<string[]> rows = new List<string[]>();
+            //List<bool> conflicts = new List<bool>();
+            bool foundConflicts = false;
+            foreach (Transaction transaction in matches)
+            {
+                //rows.Add(transaction.TableEntry);
+                //conflicts.Add(transaction.TypeId > 0);
+
+                transactionsGrid.Rows.Add(transaction.TableEntry);
+                if (transaction.TypeId > 0 && (mLoadedType == null || mLoadedType.Id != transaction.TypeId) )
+                {
+                    foundConflicts = true;
+                    transactionsGrid.Rows[transactionsGrid.Rows.Count - 2].DefaultCellStyle.BackColor = Constants.ErrorColor;
+                }
+            }
+
+            //transactionsGrid.Rows.AddRange(rows.ToArray());
+            UpdateSaveAndDelete(foundConflicts);
         }
     }
 }

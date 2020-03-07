@@ -22,8 +22,9 @@ namespace BudgetManager.Logic
         public static Dictionary<string, List<Statement>> AllStatements { get; set; }
         public static List<AmazonStatement> AmazonStatements { get; set; }
 
-        public static void Load(string directory)
+        public static List<string> Load(string directory)
         {
+            List<string> warnings = new List<string>();
             string[] directories = Directory.GetDirectories(directory);
 
             AllStatements = new Dictionary<string, List<Statement>>();
@@ -77,7 +78,9 @@ namespace BudgetManager.Logic
 
                         if (Math.Abs(balance - statement.EndingBalance) > 0.01)
                         {
-                            Console.WriteLine("Ending balance mismatch: {0} vs. stated {1}", balance, statement.EndingBalance);
+                            string warning = $"Ending balance mismatch: {balance} vs. stated {statement.EndingBalance}";
+                            warnings.Add(warning);
+                            Console.WriteLine(warning);
                         }
 
                         SaveToCache(statement);
@@ -95,6 +98,8 @@ namespace BudgetManager.Logic
                     Console.WriteLine("Finished reading {0} directory ({1} --> {2})", directoryName, AllStatements[directoryName].First().StartingBalance, AllStatements[directoryName].Last().EndingBalance);
                 }
             }
+
+            return warnings;
         }
 
         public static Statement ReadStatementFile(string filepath, string account)
@@ -144,10 +149,7 @@ namespace BudgetManager.Logic
 
             foreach(Transaction t in ret.Transactions)
             {
-                if (t.Description != null)
-                {
-                    t.Description = t.Description.Trim();
-                }
+                t.Description = t.Description == null ? string.Empty : t.Description.Trim();
             }
 
             return ret;
@@ -1120,9 +1122,9 @@ namespace BudgetManager.Logic
                 SavingsAmount = double.Parse(parts[4]),
                 CreditAmount = double.Parse(parts[5]),
                 Type = parts[6],
-                FullType = string.IsNullOrEmpty(parts[7]) ? null : parts[7].Trim().Replace(';', ','),
-                Category = string.IsNullOrEmpty(parts[8]) ? null : parts[8].Trim().Replace(';', ','),
-                Description = string.IsNullOrEmpty(parts[9]) ? null : parts[9].Trim().Replace(';', ','),
+                FullType = string.IsNullOrEmpty(parts[7]) ? string.Empty : parts[7].Trim().Replace(';', ','),
+                Category = string.IsNullOrEmpty(parts[8]) ? string.Empty: parts[8].Trim().Replace(';', ','),
+                Description = string.IsNullOrEmpty(parts[9]) ? string.Empty : parts[9].Trim().Replace(';', ','),
             };
 
             return ret;
