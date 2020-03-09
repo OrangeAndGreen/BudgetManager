@@ -10,7 +10,7 @@ namespace BudgetManager.Views
         {
             InitializeComponent();
 
-            mController = new MainFormController(warningButton, cleanButton, graphsButton, transactionsButton, analysisButton, identifyButton, statusStrip1, menuStrip1, statusText, summaryLabel);
+            mController = new MainFormController(warningButton, mergeButton, graphsButton, transactionsButton, analysisButton, identifyButton, statusStrip1, menuStrip1, statusText, summaryLabel);
         }
 
         void warningButton_Click(object sender, EventArgs e)
@@ -18,14 +18,14 @@ namespace BudgetManager.Views
             mController.warningButton_Click(sender, e);
         }
 
+        void mergeButton_Click(object sender, EventArgs e)
+        {
+            mController.mergeButton_Click(sender, e);
+        }
+
         void identifyButton_Click(object sender, EventArgs e)
         {
             mController.identifyButton_Click(sender, e);
-        }
-
-        void cleanButton_Click(object sender, EventArgs e)
-        {
-            mController.cleanButton_Click(sender, e);
         }
 
         void graphsButton_Click(object sender, EventArgs e)

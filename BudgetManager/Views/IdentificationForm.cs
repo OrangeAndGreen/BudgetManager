@@ -120,7 +120,7 @@ namespace BudgetManager.Views
         private void existingGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             DataGridViewRow row = existingGrid.SelectedRows[0];
-            string description = $"{row.Cells[1].Value}: {row.Cells[2].Value}";
+            string description = $"{row.Cells[1].Value}: {row.Cells[3].Value}";
             unidentifiedGrid.ClearSelection();
 
             TransactionType toLoad = TypeManager.Get(mExistingTypeLookups[description]);

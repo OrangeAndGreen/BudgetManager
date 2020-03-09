@@ -40,9 +40,9 @@
             this.graphsButton = new System.Windows.Forms.Button();
             this.transactionsButton = new System.Windows.Forms.Button();
             this.analysisButton = new System.Windows.Forms.Button();
-            this.cleanButton = new System.Windows.Forms.Button();
             this.identifyButton = new System.Windows.Forms.Button();
             this.warningButton = new System.Windows.Forms.Button();
+            this.mergeButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -93,7 +93,7 @@
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(550, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(581, 17);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // progressBar
@@ -150,19 +150,9 @@
             this.analysisButton.UseVisualStyleBackColor = true;
             this.analysisButton.Click += new System.EventHandler(this.analysisButton_Click);
             // 
-            // cleanButton
-            // 
-            this.cleanButton.Location = new System.Drawing.Point(158, 93);
-            this.cleanButton.Name = "cleanButton";
-            this.cleanButton.Size = new System.Drawing.Size(100, 100);
-            this.cleanButton.TabIndex = 7;
-            this.cleanButton.Text = "Clean";
-            this.cleanButton.UseVisualStyleBackColor = true;
-            this.cleanButton.Click += new System.EventHandler(this.cleanButton_Click);
-            // 
             // identifyButton
             // 
-            this.identifyButton.Location = new System.Drawing.Point(12, 93);
+            this.identifyButton.Location = new System.Drawing.Point(158, 93);
             this.identifyButton.Name = "identifyButton";
             this.identifyButton.Size = new System.Drawing.Size(100, 100);
             this.identifyButton.TabIndex = 8;
@@ -181,14 +171,24 @@
             this.warningButton.UseVisualStyleBackColor = true;
             this.warningButton.Click += new System.EventHandler(this.warningButton_Click);
             // 
+            // mergeButton
+            // 
+            this.mergeButton.Location = new System.Drawing.Point(12, 93);
+            this.mergeButton.Name = "mergeButton";
+            this.mergeButton.Size = new System.Drawing.Size(100, 100);
+            this.mergeButton.TabIndex = 10;
+            this.mergeButton.Text = "Merge";
+            this.mergeButton.UseVisualStyleBackColor = true;
+            this.mergeButton.Click += new System.EventHandler(this.mergeButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(710, 218);
+            this.Controls.Add(this.mergeButton);
             this.Controls.Add(this.warningButton);
             this.Controls.Add(this.identifyButton);
-            this.Controls.Add(this.cleanButton);
             this.Controls.Add(this.analysisButton);
             this.Controls.Add(this.transactionsButton);
             this.Controls.Add(this.graphsButton);
@@ -222,8 +222,8 @@
         private System.Windows.Forms.Button graphsButton;
         private System.Windows.Forms.Button transactionsButton;
         private System.Windows.Forms.Button analysisButton;
-        private System.Windows.Forms.Button cleanButton;
         private System.Windows.Forms.Button identifyButton;
         private System.Windows.Forms.Button warningButton;
+        private System.Windows.Forms.Button mergeButton;
     }
 }

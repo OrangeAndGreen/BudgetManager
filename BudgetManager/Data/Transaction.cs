@@ -11,7 +11,6 @@ namespace BudgetManager.Data
         public double SavingsAmount { get; set; }
         public double CreditAmount { get; set; }
         public string Type { get; set; }
-        public string FullType { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
 
@@ -45,10 +44,9 @@ namespace BudgetManager.Data
 
         public override string ToString()
         {
-            string fullType = FullType == null ? "" : FullType.Replace(',', ';');
             string description = Description == null ? "" : Description.Replace(',', ';');
             string category = Category == null ? "" : Category.Replace(',', ';');
-            return $"{Date.ToShortDateString()},{string.Join("/", Accounts)},{TypeId},{CheckingAmount},{SavingsAmount},{CreditAmount},{Type},{fullType},{category},{description}";
+            return $"{Date.ToShortDateString()},{string.Join("/", Accounts)},{TypeId},{CheckingAmount},{SavingsAmount},{CreditAmount},{Type},{category},{description}";
         }
 
         public void MergeEntry(Transaction slave)

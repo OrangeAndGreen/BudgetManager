@@ -31,18 +31,18 @@
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.summaryLabel = new DarkUI.Controls.DarkLabel();
             this.statusStrip1 = new DarkUI.Controls.DarkStatusStrip();
+            this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.identifyButton = new DarkUI.Controls.DarkButton();
-            this.cleanButton = new DarkUI.Controls.DarkButton();
             this.graphsButton = new DarkUI.Controls.DarkButton();
             this.transactionsButton = new DarkUI.Controls.DarkButton();
             this.analysisButton = new DarkUI.Controls.DarkButton();
             this.warningButton = new DarkUI.Controls.DarkButton();
-            this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.menuStrip1 = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mergeButton = new DarkUI.Controls.DarkButton();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -85,25 +85,32 @@
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "darkStatusStrip1";
             // 
+            // statusText
+            // 
+            this.statusText.Name = "statusText";
+            this.statusText.Size = new System.Drawing.Size(12, 14);
+            this.statusText.Text = "-";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(596, 14);
+            this.toolStripStatusLabel2.Spring = true;
+            // 
+            // progressBar
+            // 
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(100, 13);
+            // 
             // identifyButton
             // 
-            this.identifyButton.Location = new System.Drawing.Point(12, 91);
+            this.identifyButton.Location = new System.Drawing.Point(158, 91);
             this.identifyButton.Name = "identifyButton";
             this.identifyButton.Padding = new System.Windows.Forms.Padding(5);
             this.identifyButton.Size = new System.Drawing.Size(100, 100);
             this.identifyButton.TabIndex = 3;
             this.identifyButton.Text = "Identify";
             this.identifyButton.Click += new System.EventHandler(this.identifyButton_Click);
-            // 
-            // cleanButton
-            // 
-            this.cleanButton.Location = new System.Drawing.Point(158, 91);
-            this.cleanButton.Name = "cleanButton";
-            this.cleanButton.Padding = new System.Windows.Forms.Padding(5);
-            this.cleanButton.Size = new System.Drawing.Size(100, 100);
-            this.cleanButton.TabIndex = 4;
-            this.cleanButton.Text = "Clean";
-            this.cleanButton.Click += new System.EventHandler(this.cleanButton_Click);
             // 
             // graphsButton
             // 
@@ -145,23 +152,6 @@
             this.warningButton.Text = "!!!";
             this.warningButton.Click += new System.EventHandler(this.warningButton_Click);
             // 
-            // statusText
-            // 
-            this.statusText.Name = "statusText";
-            this.statusText.Size = new System.Drawing.Size(12, 11);
-            this.statusText.Text = "-";
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(565, 11);
-            this.toolStripStatusLabel2.Spring = true;
-            // 
-            // progressBar
-            // 
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(100, 10);
-            // 
             // menuStrip1
             // 
             this.menuStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -190,9 +180,19 @@
             this.loadDirectoryToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.loadDirectoryToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.loadDirectoryToolStripMenuItem.Name = "loadDirectoryToolStripMenuItem";
-            this.loadDirectoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadDirectoryToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.loadDirectoryToolStripMenuItem.Text = "Load Directory";
             this.loadDirectoryToolStripMenuItem.Click += new System.EventHandler(this.loadDirectoryToolStripMenuItem_Click);
+            // 
+            // mergeButton
+            // 
+            this.mergeButton.Location = new System.Drawing.Point(12, 91);
+            this.mergeButton.Name = "mergeButton";
+            this.mergeButton.Padding = new System.Windows.Forms.Padding(5);
+            this.mergeButton.Size = new System.Drawing.Size(100, 100);
+            this.mergeButton.TabIndex = 10;
+            this.mergeButton.Text = "Merge";
+            this.mergeButton.Click += new System.EventHandler(this.mergeButton_Click);
             // 
             // MainForm_Dark
             // 
@@ -200,11 +200,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.ClientSize = new System.Drawing.Size(710, 226);
+            this.Controls.Add(this.mergeButton);
             this.Controls.Add(this.warningButton);
             this.Controls.Add(this.analysisButton);
             this.Controls.Add(this.transactionsButton);
             this.Controls.Add(this.graphsButton);
-            this.Controls.Add(this.cleanButton);
             this.Controls.Add(this.identifyButton);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -228,7 +228,6 @@
         private DarkUI.Controls.DarkLabel summaryLabel;
         private DarkUI.Controls.DarkStatusStrip statusStrip1;
         private DarkUI.Controls.DarkButton identifyButton;
-        private DarkUI.Controls.DarkButton cleanButton;
         private DarkUI.Controls.DarkButton graphsButton;
         private DarkUI.Controls.DarkButton transactionsButton;
         private DarkUI.Controls.DarkButton analysisButton;
@@ -239,5 +238,6 @@
         private DarkUI.Controls.DarkMenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadDirectoryToolStripMenuItem;
+        private DarkUI.Controls.DarkButton mergeButton;
     }
 }

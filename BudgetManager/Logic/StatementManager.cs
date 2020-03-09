@@ -199,7 +199,7 @@ namespace BudgetManager.Logic
                         }
                         break;
                     case ReadState.Balance:
-                        List<string> balanceParts = trimmed.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                        List<string> balanceParts = trimmed.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                         if (balanceParts.Count == 7)
                         {
                             if (double.TryParse(balanceParts[0], out double start) &&
@@ -214,7 +214,7 @@ namespace BudgetManager.Logic
                     case ReadState.Credit:
                     case ReadState.Check:
                     case ReadState.Debit:
-                        string[] entries = new string[] { trimmed };
+                        string[] entries = { trimmed };
                         bool singleLineEntry = false;
                         if (state == ReadState.Check)
                         {
@@ -227,10 +227,10 @@ namespace BudgetManager.Logic
                                 singleLineEntry = true;
                             }
 
-                            List<string> entryParts = trimmed.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                            List<string> entryParts = trimmed.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                             if (entryParts.Count >= 6)
                             {
-                                entries = new string[]
+                                entries = new[]
                                 {
                                     string.Join(" ", entryParts.GetRange(0, 3)),
                                     string.Join(" ", entryParts.GetRange(3, 3))
@@ -256,7 +256,7 @@ namespace BudgetManager.Logic
                                     Type = state.ToString()
                                 };
 
-                                List<string> entryParts = entry.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                                List<string> entryParts = entry.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                                 entryParts.RemoveAt(0);
 
                                 string amountString = "";
@@ -289,7 +289,7 @@ namespace BudgetManager.Logic
                                 int multiplier = state == ReadState.Credit ? 1 : -1;
                                 curEntry.CheckingAmount = amount * multiplier;
 
-                                curEntry.FullType = typeString;
+                                curEntry.Description = (state == ReadState.Check ? "Check " : string.Empty) + typeString;
 
                                 linesInEntry = 1;
 
@@ -578,7 +578,7 @@ namespace BudgetManager.Logic
                             int multiplier = state == ReadState.Credit ? 1 : -1;
                             curEntry.SavingsAmount = amount * multiplier;
 
-                            curEntry.FullType = typeString;
+                            curEntry.Description = typeString;
 
                             linesInEntry = 1;
                         }
@@ -1107,7 +1107,7 @@ namespace BudgetManager.Logic
         {
             string[] parts = summary.Split(',');
 
-            if (parts.Length != 10)
+            if (parts.Length != 9)
             {
                 return null;
             }
@@ -1121,9 +1121,8 @@ namespace BudgetManager.Logic
                 SavingsAmount = double.Parse(parts[4]),
                 CreditAmount = double.Parse(parts[5]),
                 Type = parts[6],
-                FullType = string.IsNullOrEmpty(parts[7]) ? string.Empty : parts[7].Trim().Replace(';', ','),
-                Category = string.IsNullOrEmpty(parts[8]) ? string.Empty: parts[8].Trim().Replace(';', ','),
-                Description = string.IsNullOrEmpty(parts[9]) ? string.Empty : parts[9].Trim().Replace(';', ','),
+                Category = string.IsNullOrEmpty(parts[7]) ? string.Empty: parts[7].Trim().Replace(';', ','),
+                Description = string.IsNullOrEmpty(parts[8]) ? string.Empty : parts[8].Trim().Replace(';', ','),
             };
 
             return ret;

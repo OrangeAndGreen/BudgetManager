@@ -1,5 +1,9 @@
 ﻿TODOs:
 
+Things I want to be able to do:
+	-Analyze spending habits
+	-Assign categories to transactions (automatically with defaults, and user overrides)
+
 Graphs
 	-Shade to 0, not -inf
 	-Better color control

@@ -10,7 +10,7 @@ namespace BudgetManager.Views
     public class MainFormController
     {
         Button warningButton { get; set; }
-        Button cleanButton { get; set; }
+        Button mergeButton { get; set; }
         Button graphsButton { get; set; }
         Button transactionsButton { get; set; }
         Button analysisButton { get; set; }
@@ -26,7 +26,7 @@ namespace BudgetManager.Views
         DateTime mStartDate { get; set; }
 
         public MainFormController(Button warningButtonIn,
-                                    Button cleanButtonIn,
+                                    Button mergeButtonIn,
                                     Button graphsButtonIn,
                                     Button transactionsButtonIn,
                                     Button analysisButtonIn,
@@ -37,7 +37,7 @@ namespace BudgetManager.Views
                                     Label summaryLabelIn)
         {
             warningButton = warningButtonIn;
-            cleanButton = cleanButtonIn;
+            mergeButton = mergeButtonIn;
             graphsButton = graphsButtonIn;
             transactionsButton = transactionsButtonIn;
             analysisButton = analysisButtonIn;
@@ -67,14 +67,14 @@ namespace BudgetManager.Views
             ChooseDirectory();
         }
 
+        public void mergeButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
         public void identifyButton_Click(object sender, EventArgs e)
         {
             new IdentificationForm(ShowSummary).Show();
-        }
-
-        public void cleanButton_Click(object sender, EventArgs e)
-        {
-
         }
 
         public void graphsButton_Click(object sender, EventArgs e)
@@ -105,7 +105,7 @@ namespace BudgetManager.Views
             void doEnable()
             {
                 identifyButton.Enabled = enabled;
-                cleanButton.Enabled = enabled;
+                mergeButton.Enabled = enabled;
                 graphsButton.Enabled = enabled;
                 transactionsButton.Enabled = enabled;
                 analysisButton.Enabled = enabled;

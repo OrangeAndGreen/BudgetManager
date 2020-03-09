@@ -93,15 +93,9 @@ namespace BudgetManager
                 {"CHECKING", "To Dana Viggiano SAVINGS"}
             };
 
-            string myLabel = transaction.Description;
-            if (string.IsNullOrEmpty(transaction.Description))
-            {
-                myLabel = transaction.FullType;
-            }
-
             foreach (string key in matchingLabels.Keys)
             {
-                if (myLabel.StartsWith(key))
+                if (transaction.Description.StartsWith(key))
                 {
                     matchStarter = matchingLabels[key];
                     break;
@@ -116,15 +110,9 @@ namespace BudgetManager
             for (int i = 0; i < checkingList.Count; i++)
             {
                 Transaction searchEntry = checkingList[i];
-                string searchLabel = searchEntry.Description;
-                if (string.IsNullOrEmpty(searchEntry.Description))
+                if (searchEntry.Description != null)
                 {
-                    searchLabel = searchEntry.FullType;
-                }
-
-                if (searchLabel != null)
-                {
-                    searchLabel = searchLabel.Trim();
+                    string searchLabel = searchEntry.Description.Trim();
 
                     double myAmount = transaction.CheckingAmount == 0 ? (transaction.SavingsAmount == 0 ? transaction.CreditAmount : transaction.SavingsAmount) : transaction.CheckingAmount;
                     double theirAmount = searchEntry.CheckingAmount == 0 ? (searchEntry.SavingsAmount == 0 ? searchEntry.CreditAmount : searchEntry.SavingsAmount) : searchEntry.CheckingAmount;
