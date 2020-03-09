@@ -33,7 +33,7 @@ namespace BudgetManager.Data
             get
             {
                 return new[] {
-                    Date.ToShortDateString(),
+                    Date.ToString("yyyy/MM/dd"),
                     CheckingAmount == 0 ? string.Empty : $"{CheckingAmount:0.00}",
                     CreditAmount == 0 ? string.Empty : $"{CreditAmount:0.00}",
                     SavingsAmount == 0 ? string.Empty : $"{SavingsAmount:0.00}",

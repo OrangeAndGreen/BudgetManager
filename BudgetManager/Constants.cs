@@ -5,6 +5,7 @@ namespace BudgetManager
     public static class Constants
     {
         public const string CacheDirectory = "Cache";
+        public const string AmazonLabel = "Amazon";
         public const string TypesFilename = "TransactionTypes.txt";
         public static readonly Color ErrorColor = Color.LightCoral;
     }

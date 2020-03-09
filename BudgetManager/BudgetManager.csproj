@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DarkUI, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DarkUI.2.0.0\lib\DarkUI.dll</HintPath>
+    </Reference>
     <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
     </Reference>
@@ -97,6 +100,13 @@
     <Compile Include="Views\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\MainFormController.cs" />
+    <Compile Include="Views\MainForm_Dark.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MainForm_Dark.Designer.cs">
+      <DependentUpon>MainForm_Dark.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\TransactionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +133,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MainForm_Dark.resx">
+      <DependentUpon>MainForm_Dark.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\TransactionsForm.resx">
       <DependentUpon>TransactionsForm.cs</DependentUpon>

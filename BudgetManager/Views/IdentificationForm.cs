@@ -2,6 +2,7 @@
 using BudgetManager.Logic;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -23,71 +24,117 @@ namespace BudgetManager.Views
 
         void RefreshUi()
         {
+            existingGrid.Rows.Clear();
+            existingGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            existingGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+            unidentifiedGrid.Rows.Clear();
+            unidentifiedGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            unidentifiedGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+            string[] existinColumnNames = {
+                "Count",
+                "Vendor",
+                "Category",
+                "Pattern"
+            };
+            string[] unidentifiedColumnNames = {
+                "Count",
+                "Description"
+            };
+
+            existingGrid.ColumnCount = existinColumnNames.Length;
+            unidentifiedGrid.ColumnCount = unidentifiedColumnNames.Length;
+
+            for (int i = 0; i < existinColumnNames.Length; i++)
+            {
+                existingGrid.Columns[i].Name = existinColumnNames[i];
+            }
+
+            for (int i = 0; i < unidentifiedColumnNames.Length; i++)
+            {
+                unidentifiedGrid.Columns[i].Name = unidentifiedColumnNames[i];
+            }
+
+            Dictionary<string, int> existingCounts = new Dictionary<string, int>();
+            Dictionary<string, int> unidentified = new Dictionary<string, int>();
+
             //List and map existing transaction types
-            List<string> list = new List<string>();
-            mExistingTypeLookups = new Dictionary<string, int>();
             foreach (int id in TypeManager.Types.Keys)
             {
                 TransactionType curType = TypeManager.Types[id];
                 string description = $"{curType.Vendor}: {curType.Identifier}";
-                list.Add(description);
-                mExistingTypeLookups[description] = curType.Id;
-            }
-
-            transactionTypeList.Items.Clear();
-            list.Sort();
-            foreach (string str in list)
-            {
-                transactionTypeList.Items.Add(str);
+                existingCounts[description] = 0;
             }
 
             //Find and list unidentified transactions
-            list = new List<string>();
             foreach(string accountKey in StatementManager.AllStatements.Keys)
             {
                 foreach(Statement statement in StatementManager.AllStatements[accountKey])
                 {
                     foreach(Transaction transaction in statement.Transactions)
                     {
-                        if(transaction.TypeId <= 0 && !string.IsNullOrEmpty(transaction.Description))
+                        if(transaction.TypeId <= 0)
                         {
-                            list.Add($"{transaction.Description}");
+                            string description = string.IsNullOrEmpty(transaction.Description) ? "(blank)" : transaction.Description;
+                            if (unidentified.ContainsKey(description))
+                            {
+                                unidentified[description]++;
+                            }
+                            else
+                            {
+                                unidentified[description] = 1;
+                            }
+                        }
+                        else
+                        {
+                            TransactionType curType = TypeManager.Get(transaction.TypeId);
+                            string description = $"{curType.Vendor}: {curType.Identifier}";
+                            existingCounts[description]++;
                         }
                     }
                 }
             }
 
-            unidentifiedTransactionsList.Items.Clear();
-            list.Sort();
-            foreach (string str in list)
+            mExistingTypeLookups = new Dictionary<string, int>();
+            foreach (int id in TypeManager.Types.Keys)
             {
-                unidentifiedTransactionsList.Items.Add(str);
+                TransactionType curType = TypeManager.Types[id];
+                string description = $"{curType.Vendor}: {curType.Identifier}";
+                mExistingTypeLookups[description] = curType.Id;
+
+                existingGrid.Rows.Add(new [] { $"{existingCounts[description]:000}", curType.Vendor, curType.Category, curType.Identifier });
             }
+
+            foreach (string key in unidentified.Keys)
+            {
+                unidentifiedGrid.Rows.Add(new[] { $"{unidentified[key]:000}", key });
+            }
+
+            unidentifiedGrid.Sort(unidentifiedGrid.Columns["Count"], ListSortDirection.Descending);
+            existingGrid.Sort(existingGrid.Columns["Vendor"], ListSortDirection.Ascending);
 
             UpdateSaveAndDelete();
         }
 
-        void transactionTypeList_SelectedIndexChanged(object sender, EventArgs e)
+        private void existingGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            string description = (string)transactionTypeList.SelectedItem;
+            DataGridViewRow row = existingGrid.SelectedRows[0];
+            string description = $"{row.Cells[1].Value}: {row.Cells[2].Value}";
+            unidentifiedGrid.ClearSelection();
 
-            if (description != null)
-            {
-                unidentifiedTransactionsList.ClearSelected();
+            TransactionType toLoad = TypeManager.Get(mExistingTypeLookups[description]);
 
-                TransactionType toLoad = TypeManager.Get(mExistingTypeLookups[description]);
-
-                LoadType(toLoad);
-            }
+            LoadType(toLoad);
         }
 
-        void unidentifiedTransactionsList_SelectedIndexChanged(object sender, EventArgs e)
+        private void unidentifiedGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            string description = (string)unidentifiedTransactionsList.SelectedItem;
-
-            if (description != null)
+            if (e.RowIndex >= 0)
             {
-                transactionTypeList.ClearSelected();
+                DataGridViewRow row = unidentifiedGrid.Rows[e.RowIndex];
+                string description = $"{row.Cells[1].Value}";
+                existingGrid.ClearSelection();
 
                 LoadType(new TransactionType()
                 {
@@ -154,6 +201,16 @@ namespace BudgetManager.Views
             mUpdateCallback?.Invoke();
 
             RefreshUi();
+
+            string description = $"{toSave.Vendor}: {toSave.Identifier}";
+            foreach(DataGridViewRow row in existingGrid.Rows)
+            {
+                if(row.Cells[1].Value != null && row.Cells[1].Value.Equals(description))
+                {
+                    row.Selected = true;
+                    break;
+                }
+            }
         }
 
         void deleteButton_Click(object sender, EventArgs e)

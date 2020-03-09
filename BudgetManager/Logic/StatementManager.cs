@@ -19,6 +19,7 @@ namespace BudgetManager.Logic
             Balance = 6
         }
 
+        public static List<Account> Accounts { get; set; }
         public static Dictionary<string, List<Statement>> AllStatements { get; set; }
         public static List<AmazonStatement> AmazonStatements { get; set; }
 
@@ -27,12 +28,13 @@ namespace BudgetManager.Logic
             List<string> warnings = new List<string>();
             string[] directories = Directory.GetDirectories(directory);
 
+            Accounts = new List<Account>();
             AllStatements = new Dictionary<string, List<Statement>>();
             AmazonStatements = new List<AmazonStatement>();
             foreach (string subDirectory in directories)
             {
                 string directoryName = Path.GetFileNameWithoutExtension(subDirectory);
-                bool isAmazon = directoryName.Equals("Amazon");
+                bool isAmazon = directoryName.Equals(Constants.AmazonLabel);
 
                 if (!isAmazon)
                 {
@@ -119,9 +121,6 @@ namespace BudgetManager.Logic
 
             switch (ret.AccountType)
             {
-                //case AccountType.Amazon:
-                //    ret.Transactions.AddRange(ReadAmazonCSV(ret));
-                //    break;
                 case AccountType.Checking:
                     ret.Transactions.AddRange(ReadUsaaCheckingPDF(ret));
                     break;

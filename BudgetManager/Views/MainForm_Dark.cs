@@ -3,10 +3,10 @@ using System.Windows.Forms;
 
 namespace BudgetManager.Views
 {
-    public partial class MainForm : Form
+    public partial class MainForm_Dark : Form
     {
         MainFormController mController;
-        public MainForm()
+        public MainForm_Dark()
         {
             InitializeComponent();
 

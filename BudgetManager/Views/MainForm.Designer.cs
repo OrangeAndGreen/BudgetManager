@@ -53,7 +53,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(810, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(710, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -80,7 +80,7 @@
             this.progressBar});
             this.statusStrip1.Location = new System.Drawing.Point(0, 196);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(810, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(710, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -93,7 +93,7 @@
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(681, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(550, 17);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // progressBar
@@ -122,7 +122,7 @@
             // 
             // graphsButton
             // 
-            this.graphsButton.Location = new System.Drawing.Point(315, 93);
+            this.graphsButton.Location = new System.Drawing.Point(304, 93);
             this.graphsButton.Name = "graphsButton";
             this.graphsButton.Size = new System.Drawing.Size(100, 100);
             this.graphsButton.TabIndex = 4;
@@ -132,7 +132,7 @@
             // 
             // transactionsButton
             // 
-            this.transactionsButton.Location = new System.Drawing.Point(457, 93);
+            this.transactionsButton.Location = new System.Drawing.Point(450, 93);
             this.transactionsButton.Name = "transactionsButton";
             this.transactionsButton.Size = new System.Drawing.Size(100, 100);
             this.transactionsButton.TabIndex = 5;
@@ -142,7 +142,7 @@
             // 
             // analysisButton
             // 
-            this.analysisButton.Location = new System.Drawing.Point(599, 93);
+            this.analysisButton.Location = new System.Drawing.Point(596, 93);
             this.analysisButton.Name = "analysisButton";
             this.analysisButton.Size = new System.Drawing.Size(100, 100);
             this.analysisButton.TabIndex = 6;
@@ -152,7 +152,7 @@
             // 
             // cleanButton
             // 
-            this.cleanButton.Location = new System.Drawing.Point(173, 93);
+            this.cleanButton.Location = new System.Drawing.Point(158, 93);
             this.cleanButton.Name = "cleanButton";
             this.cleanButton.Size = new System.Drawing.Size(100, 100);
             this.cleanButton.TabIndex = 7;
@@ -162,7 +162,7 @@
             // 
             // identifyButton
             // 
-            this.identifyButton.Location = new System.Drawing.Point(31, 93);
+            this.identifyButton.Location = new System.Drawing.Point(12, 93);
             this.identifyButton.Name = "identifyButton";
             this.identifyButton.Size = new System.Drawing.Size(100, 100);
             this.identifyButton.TabIndex = 8;
@@ -173,7 +173,7 @@
             // warningButton
             // 
             this.warningButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.warningButton.Location = new System.Drawing.Point(649, 27);
+            this.warningButton.Location = new System.Drawing.Point(648, 26);
             this.warningButton.Name = "warningButton";
             this.warningButton.Size = new System.Drawing.Size(50, 50);
             this.warningButton.TabIndex = 9;
@@ -185,7 +185,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(810, 218);
+            this.ClientSize = new System.Drawing.Size(710, 218);
             this.Controls.Add(this.warningButton);
             this.Controls.Add(this.identifyButton);
             this.Controls.Add(this.cleanButton);

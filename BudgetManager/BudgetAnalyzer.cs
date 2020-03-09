@@ -74,7 +74,6 @@ namespace BudgetManager
                     //}
                 }
             }
-            
 
             return combined.OrderBy(e => e.Date).ToList();
         }
@@ -84,11 +83,14 @@ namespace BudgetManager
             string matchStarter = null;
             Dictionary<string, string> matchingLabels = new Dictionary<string, string>
             {
+                //Key=Other Account, Value=Checking
                 {"USAA CREDIT CARD PAYMENT", "CREDIT CARD ENDING IN"},
                 {"Payment Thank You", "CHASE CREDIT CRD"},
                 {"PAYMENT-THANK YOU", "COMENITY PAY"},
                 {"USAA FUNDS TRANSFER CR", "USAA FUNDS TRANSFER DB"},
-                {"USAA FUNDS TRANSFER DB", "USAA FUNDS TRANSFER CR"}
+                {"USAA FUNDS TRANSFER DB", "USAA FUNDS TRANSFER CR"},
+                {"OVERDRAFT PROTECTION TO", "OVERDRAFT PROTECTION FROM"},
+                {"CHECKING", "To Dana Viggiano SAVINGS"}
             };
 
             string myLabel = transaction.Description;
@@ -197,7 +199,6 @@ namespace BudgetManager
             Console.WriteLine();
         }
 
-        //TODO Vendor-specific code
         public static Dictionary<string, LineSeries> GeneratePlots(Dictionary<string, List<Statement>> allStatements, DateTime startDate)
         {
             Dictionary<string, LineSeries> ret = new Dictionary<string, LineSeries>();
@@ -207,43 +208,40 @@ namespace BudgetManager
             var mapper = Mappers.Xy<KeyValuePair<double, double>>().X(v => v.Key).Y(v => v.Value);
             foreach (string account in allStatements.Keys)
             {
-                if (!account.Equals("Amazon"))
+                balance = -1000000;
+
+                List<Transaction> allEntries = new List<Transaction>();
+                foreach (Statement statement in allStatements[account])
                 {
-                    balance = -1000000;
-
-                    List<Transaction> allEntries = new List<Transaction>();
-                    foreach (Statement statement in allStatements[account])
+                    if (balance == -1000000)
                     {
-                        if (balance == -1000000)
-                        {
-                            balance = statement.StartingBalance;
-                            netStart += statement.StartingBalance;
-                        }
-
-                        foreach (Transaction entry in statement.Transactions)
-                        {
-                            allEntries.Add(entry);
-                            netEntries.Add(entry);
-                        }
+                        balance = statement.StartingBalance;
+                        netStart += statement.StartingBalance;
                     }
 
-                    allEntries = allEntries.OrderBy(e => e.Date).ToList();
-
-
-                    ChartValues<KeyValuePair<double, double>> entries = new ChartValues<KeyValuePair<double, double>>();
-                    foreach (Transaction entry in allEntries)
+                    foreach (Transaction entry in statement.Transactions)
                     {
-                        double amount = entry.CheckingAmount == 0 ? (entry.SavingsAmount == 0 ? entry.CreditAmount : entry.SavingsAmount) : entry.CheckingAmount;
-                        balance += amount;
-                        entries.Add(new KeyValuePair<double, double>((entry.Date - startDate).TotalDays, balance));
+                        allEntries.Add(entry);
+                        netEntries.Add(entry);
                     }
-
-                    ret[account] = new LineSeries(mapper)
-                    {
-                        Title = account,//.Replace(' ', '_').Replace('-','_');
-                        Values = entries
-                    };
                 }
+
+                allEntries = allEntries.OrderBy(e => e.Date).ToList();
+
+
+                ChartValues<KeyValuePair<double, double>> entries = new ChartValues<KeyValuePair<double, double>>();
+                foreach (Transaction entry in allEntries)
+                {
+                    double amount = entry.CheckingAmount == 0 ? (entry.SavingsAmount == 0 ? entry.CreditAmount : entry.SavingsAmount) : entry.CheckingAmount;
+                    balance += amount;
+                    entries.Add(new KeyValuePair<double, double>((entry.Date - startDate).TotalDays, balance));
+                }
+
+                ret[account] = new LineSeries(mapper)
+                {
+                    Title = account,//.Replace(' ', '_').Replace('-','_');
+                    Values = entries
+                };
             }
 
             netEntries = netEntries.OrderBy(e => e.Date).ToList();
